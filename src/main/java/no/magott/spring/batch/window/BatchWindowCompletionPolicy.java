@@ -30,7 +30,7 @@ public class BatchWindowCompletionPolicy extends SimpleCompletionPolicy{
     	if(new Date().after(closingTime)){
             log.debug("Batch window has passed, batch will exit with data left to process");
             //Seems to be no difference between terminateOnly and completeOnly?
-            context.getParent().setTerminateOnly();
+            context.getParent().setTerminateOnly(); //XXX: Only works for parent, no clue why...
             return true;
         }
         log.trace("Timeout not reached");
