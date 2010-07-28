@@ -1,4 +1,4 @@
-package no.magott.spring.batch.plaground;
+package no.magott.spring.batch.window;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration(locations={"classpath:infiniteJob-batchwindow-cutoff.xml", "classpath:springbatch-common.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class InfiniteJobTests {
+public class InfiniteJobBatchWindowTests {
 
     @Autowired
     private JobLauncher jobLauncher;
