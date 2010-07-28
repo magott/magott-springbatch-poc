@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	xmlns:p="http://www.springframework.org/schema/p">
+
+	<description>Example job to get you started. It provides a
+		skeleton for a typical batch application.</description>
+
+	<job id="inifiniteLoopJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="step1" parent="simpleStep">
+			<tasklet>
+				<chunk reader="reader" writer="writer"/>
+			</tasklet>
+		</step>
+	</job>
+
+	<bean id="reader" class="no.magott.spring.batch.InifiniteReader"/>
+	<bean id="writer" class="org.springframework.sample.batch.example.ExampleItemWriter" />
+
+	<bean id="simpleStep"
+		class="org.springframework.batch.core.step.item.SimpleStepFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="jobRepository" ref="jobRepository" />
+		<property name="startLimit" value="100" />
+<!--		<property name="commitInterval" value="1" />-->
+		<property name="chunkCompletionPolicy" ref="batchWindowCompletionPolicy" />
+	</bean>
+	
+	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowCompletionPolicy">
+	
+</bean>
+
+</beans>
