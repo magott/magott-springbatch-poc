@@ -29,8 +29,9 @@
 		<property name="chunkCompletionPolicy" ref="batchWindowCompletionPolicy" />
 	</bean>
 	
-	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowCompletionPolicy">
+	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowCompletionPolicy" scope="step">
+		<property name="closingTime" value="#{jobParameters['batchwindow.closingTime']}" />
+	</bean>
 	
-</bean>
 
 </beans>
