@@ -22,7 +22,7 @@
 	<bean id="reader" class="no.magott.spring.batch.InifiniteReader" />
 	<bean id="writer" class="no.magott.spring.batch.ExampleItemWriter" />
 
-	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowCompletionPolicy" scope="step">
+	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowEnforcer" scope="step">
 		<property name="closingTime" value="#{jobParameters['batchwindow.closingTime']}" />
 	</bean>
 
