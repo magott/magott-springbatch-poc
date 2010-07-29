@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration(locations={"classpath:infiniteJob-batchwindow-cutoff.xml", "classpath:springbatch-common.xml"})
+@ContextConfiguration(locations={"classpath:infiniteJob-batchwindow-completionpolicy-cutoff.xml", "classpath:springbatch-common.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class InfiniteJobBatchWindowTests {
+public class InfiniteJobBatchWindowCompletionPolicyTests {
 
 	private static final int DELAY_FOR_BATCHWINDOW_IN_MILLIS = 1000;
 	private static final int TIMEOUT_LENIENCE_IN_MILLIS = 1000;
