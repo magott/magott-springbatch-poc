@@ -1,16 +1,17 @@
 package no.magott.spring.batch.window;
 
 import java.util.Date;
-import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.repeat.RepeatContext;
+import org.springframework.batch.repeat.RepeatException;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.batch.repeat.policy.SimpleCompletionPolicy;
+import org.springframework.batch.repeat.policy.DefaultResultCompletionPolicy;
 import org.springframework.util.Assert;
 
-public class BatchWindowCompletionPolicy extends SimpleCompletionPolicy{
+public class BatchWindowCompletionPolicy extends DefaultResultCompletionPolicy {
 
     private static final Log log = LogFactory.getLog(BatchWindowCompletionPolicy.class);   
     
@@ -28,10 +29,9 @@ public class BatchWindowCompletionPolicy extends SimpleCompletionPolicy{
     private boolean isBatchWindowClosed(RepeatContext context) {
         Assert.notNull(closingTime, "ClosingTime must be set");
     	if(new Date().after(closingTime)){
-            log.debug("Batch window has passed, batch will exit with data left to process");
-            //Seems to be no difference between terminateOnly and completeOnly?
-            context.getParent().setTerminateOnly(); //XXX: Only works for parent, no clue why...
-            return true;
+            String message = "Batch window has passed, batch will exit with data left to process";
+            log.debug(message);
+            throw new RepeatException("Planned failure on timeout", new TimeoutException(message));
         }
         log.trace("Timeout not reached");
         return false;

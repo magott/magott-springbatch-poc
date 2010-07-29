@@ -1,4 +1,4 @@
-package org.springframework.sample.batch.example;
+package no.magott.spring.batch;
 
 import java.util.List;
 
