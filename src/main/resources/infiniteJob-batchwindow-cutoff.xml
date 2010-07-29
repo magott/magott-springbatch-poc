@@ -9,22 +9,18 @@
 		skeleton for a typical batch application.</description>
 
 	<job id="inifiniteLoopJob" xmlns="http://www.springframework.org/schema/batch">
-		<step id="step1" parent="simpleStep">
+		<step id="step1">
 			<tasklet>
-				<chunk reader="reader" writer="writer"/>
+				<chunk reader="reader" writer="writer" commit-interval="1"/>
+				<listeners>
+					<listener ref="batchWindowCompletionPolicy"/>
+				</listeners>
 			</tasklet>
 		</step>
 	</job>
 
 	<bean id="reader" class="no.magott.spring.batch.InifiniteReader" />
 	<bean id="writer" class="no.magott.spring.batch.ExampleItemWriter" />
-
-	<bean id="simpleStep" class="org.springframework.batch.core.step.item.SimpleStepFactoryBean" abstract="true">
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="jobRepository" ref="jobRepository" />
-		<property name="startLimit" value="100" />
-		<property name="chunkCompletionPolicy" ref="batchWindowCompletionPolicy" />
-	</bean>
 
 	<bean id="batchWindowCompletionPolicy" class="no.magott.spring.batch.window.BatchWindowCompletionPolicy" scope="step">
 		<property name="closingTime" value="#{jobParameters['batchwindow.closingTime']}" />
