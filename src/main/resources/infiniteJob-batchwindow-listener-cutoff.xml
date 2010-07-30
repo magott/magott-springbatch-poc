@@ -30,6 +30,7 @@
 
 	<bean id="batchWindowListener" class="no.magott.spring.batch.window.BatchWindowChunkListener" scope="step">
 		<property name="closingTime" value="#{jobParameters['batchwindow.closingTime']}" />
+		<property name="cronDate" value="#{jobParameters['batchwindow.cronDate']}" />
 		<property name="stepExecution" value="#{stepExecution}" />
 	</bean>
 

@@ -1,4 +1,4 @@
-package no.magott.spring.batch.window;
+    package no.magott.spring.batch.window;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,6 +13,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,6 +39,7 @@ public class InfiniteJobBatchWindowListenerTests {
 	public void testLaunchJob() throws Exception {
 
 		JobParameters params = new JobParametersBuilder().addLong("batchwindow.closingTime", getClosingTime())
+		        .addString("batchwindow.cronDate", "")
 				.toJobParameters();
 		JobExecution jobExecution = jobLauncher.run(job, params);
 
@@ -69,6 +73,15 @@ public class InfiniteJobBatchWindowListenerTests {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MILLISECOND, DELAY_FOR_BATCHWINDOW_IN_MILLIS);
 		return (Long) calendar.getTime().getTime();
+	}
+	
+	@Test(timeout=2000+TIMEOUT_LENIENCE_IN_MILLIS)
+	public void timeOutCanBeSetUsingCronExpression() throws Exception {
+	    JobParameters params = new JobParametersBuilder().addLong("batchwindow.closingTime", getClosingTime())
+                .addString("batchwindow.cronDate", "*/2 * * * * *")
+                .toJobParameters();
+        JobExecution jobExecution = jobLauncher.run(job, params);	
+        assertEquals(ExitStatus.STOPPED, jobExecution.getExitStatus());
 	}
 
 }
