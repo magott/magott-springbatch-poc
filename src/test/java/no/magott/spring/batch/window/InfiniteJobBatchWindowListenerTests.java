@@ -2,6 +2,7 @@
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
@@ -50,8 +51,7 @@ public class InfiniteJobBatchWindowListenerTests {
 		 * window timeout
 		 */
 		String description = jobExecution.getStepExecutions().iterator().next().getExitStatus().getExitDescription();
-		assertEquals("org.springframework.batch.core.JobInterruptedException; "
-				+ "Batch window has passed, batch will exit with data left to process", description);
+		assertTrue(description.contains("Batch window has passed, batch will exit with data left to process"));
 
 		/*
 		 * The stepExecution.exitStatus is never propagated to jobExecution
