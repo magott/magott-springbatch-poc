@@ -1,4 +1,4 @@
-package no.magott.spring.batch.config.logging;
+package no.magott.spring.configuration.logging;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
