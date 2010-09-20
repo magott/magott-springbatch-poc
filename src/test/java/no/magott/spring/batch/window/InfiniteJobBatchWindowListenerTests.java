@@ -44,7 +44,7 @@ public class InfiniteJobBatchWindowListenerTests {
 				.toJobParameters();
 		JobExecution jobExecution = jobLauncher.run(job, params);
 
-		assertEquals(ExitStatus.STOPPED, jobExecution.getExitStatus());
+		assertEquals(ExitStatus.STOPPED.getExitCode(), jobExecution.getExitStatus().getExitCode());
 
 		/*
 		 * Checks that the step execution contains exit description for batch
