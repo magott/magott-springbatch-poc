@@ -48,10 +48,7 @@ public class Log4jConfigurationTest {
 	
 	private void writeLog4JFile(String filename2, LogLevel logLevel) throws IOException {
 		String tempDir = System.getProperty("java.io.tmpdir");
-		System.out.println(tempDir);
 		File file = new File(tempDir+File.separator+relativeFilename);
-		
-		System.out.println(file);
 		FileOutputStream log4jConfigFileWriter = new FileOutputStream(file,false);
 		OutputStreamWriter out = new OutputStreamWriter(log4jConfigFileWriter);
 		BufferedWriter writer = new BufferedWriter(out);
