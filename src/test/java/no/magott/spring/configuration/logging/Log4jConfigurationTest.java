@@ -40,7 +40,7 @@ public class Log4jConfigurationTest {
 		log4jDynamicConfigurer.setRefreshInterval(1);
 		log4jDynamicConfigurer.afterPropertiesSet();
 		writeLog4JFile(LogLevel.DEBUG);
-		Thread.sleep(1000);
+		Thread.sleep(100);
 		assertTrue(log.isDebugEnabled());
 	}
 	
