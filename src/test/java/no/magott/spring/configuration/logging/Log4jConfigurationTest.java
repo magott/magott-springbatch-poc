@@ -31,7 +31,7 @@ public class Log4jConfigurationTest {
 	
 	@Test
 	public void logLevelIsChanged() throws Exception{
-		writeLog4JFile(absoluteFilename, LogLevel.INFO);
+		writeLog4JFile(LogLevel.INFO);
 		PropertyConfigurator.configure(absoluteFilename);
 		Logger log = LogManager.getLogger(getClass());
 		assertTrue(log.isInfoEnabled());
@@ -39,16 +39,15 @@ public class Log4jConfigurationTest {
 		log4jDynamicConfigurer.setLocation(absoluteFilename);
 		log4jDynamicConfigurer.setRefreshInterval(1);
 		log4jDynamicConfigurer.afterPropertiesSet();
-		writeLog4JFile(absoluteFilename, LogLevel.DEBUG);
+		writeLog4JFile(LogLevel.DEBUG);
 		Thread.sleep(1000);
 		assertTrue(log.isDebugEnabled());
 	}
 	
 	
 	
-	private void writeLog4JFile(String filename2, LogLevel logLevel) throws IOException {
-		String tempDir = System.getProperty("java.io.tmpdir");
-		File file = new File(tempDir+File.separator+relativeFilename);
+	private void writeLog4JFile(LogLevel logLevel) throws IOException {
+		File file = new File(absoluteFilename);
 		FileOutputStream log4jConfigFileWriter = new FileOutputStream(file,false);
 		OutputStreamWriter out = new OutputStreamWriter(log4jConfigFileWriter);
 		BufferedWriter writer = new BufferedWriter(out);
