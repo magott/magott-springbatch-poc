@@ -36,11 +36,15 @@ public class BatchWindowChunkListener extends ChunkListenerSupport {
     private void verifyBatchWindowStillOpen() {
         Assert.notNull(closingTime, "ClosingTime must be set");
         if (new Date().after(closingTime)) {
-            String message = "Batch window has passed, batch will exit with data left to process. Window set to close at "+closingTime;
-            stepExecution.setTerminateOnly();
-            stepExecution.setExitStatus(stepExecution.getExitStatus().addExitDescription(message));
+            stop();//Hammertime
         }
         log.trace("Batch window is still open");
+    }
+
+    private void stop() {
+        String message = "Batch window has passed, batch will exit with data left to process. Window set to close at "+closingTime;
+        stepExecution.setTerminateOnly();
+        stepExecution.setExitStatus(stepExecution.getExitStatus().addExitDescription(message));
     }
 
     private void setWindowClosing(String cronExpression) {
