@@ -26,7 +26,7 @@ public class InfiniteJobSkipLimitTest {
 	private Job job;
 
 	@Test(timeout = 60000)
-	public void jobShouldFailWithWhenSkipLimitIsGreaterThanCommitInterval() throws Exception {
+	public void jobShouldAlsoFailWhenSkipLimitIsGreaterThanCommitInterval() throws Exception {
 
 		JobParameters params = new JobParametersBuilder().addLong("foo", System.currentTimeMillis())
 				.toJobParameters();
