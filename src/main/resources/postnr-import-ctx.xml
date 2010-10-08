@@ -8,8 +8,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
-	<description>Example job to get you started. It provides a
-		skeleton for a typical batch application.</description>
+	<description>Batch job importing Norwegian zip codes from flat file to database</description>
 
 	<job id="postnummerImport" xmlns="http://www.springframework.org/schema/batch">
 		<step id="filTilDb">
