@@ -37,7 +37,12 @@
 		</property>
 	</bean>
 	
-	<bean id="writer" class="no.magott.spring.batch.ExampleItemWriter" />
-
+	<bean id="writer" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql" value="INSERT INTO POSTNUMMER(postnummer, poststed) VALUES(:postnummer, :poststed)" />
+		<property name="itemSqlParameterSourceProvider">
+			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+		</property>
+	</bean>
 
 </beans>
