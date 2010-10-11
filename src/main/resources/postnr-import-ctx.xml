@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:batch="http://www.springframework.org/schema/batch"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
-	<description>Batch job importing Norwegian zip codes from flat file to database</description>
+	<description>Batch job importing Norwegian zip codes from flat file to
+		database</description>
 
 	<job id="postnummerImport" xmlns="http://www.springframework.org/schema/batch">
 		<step id="filTilDb">
 			<tasklet>
-				<chunk reader="reader" writer="writer" commit-interval="10"/>
+				<chunk reader="reader" writer="writer" commit-interval="10" />
 			</tasklet>
+			<batch:next on="*" to="partitionDbTilReverse" />
+		</step>
+		<step id="partitionDbTilReverse">
+			<partition step="dbTilReverse" partitioner="partitioner">
+				<handler grid-size="2" task-executor="taskExecutor"/>
+			</partition>		
 		</step>
 	</job>
+
+	<bean id="taskExecutor" class="org.springframework.core.task.SyncTaskExecutor" />
+
+	<step id="dbTilReverse" xmlns="http://www.springframework.org/schema/batch">
+		<tasklet>
+			<chunk reader="postnummerFromDBReader" processor="reverseProcessor"
+				writer="postnrReverseWriter" commit-interval="10" />
+		</tasklet>
+	</step>
 
 	<bean id="reader" class="org.springframework.batch.item.file.FlatFileItemReader">
 		<property name="resource" value="classpath:postnr.txt" />
 		<property name="lineMapper">
 			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<property name="lineTokenizer">
-					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
-						<property name="names" value="Postnummer, Poststed, Kommunekode, Kommunenavn, Kategori" />
+					<bean
+						class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+						<property name="names"
+							value="Postnummer, Poststed, Kommunekode, Kommunenavn, Kategori" />
 						<property name="delimiter">
-							<util:constant static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB"/>
+							<util:constant
+								static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB" />
 						</property>
 					</bean>
 				</property>
@@ -36,13 +53,58 @@
 			</bean>
 		</property>
 	</bean>
-	
-	<bean id="writer" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+
+	<bean id="writer"
+		class="org.springframework.batch.item.database.JdbcBatchItemWriter">
 		<property name="dataSource" ref="dataSource" />
-		<property name="sql" value="INSERT INTO POSTNUMMER(postnummer, poststed) VALUES(:postnummer, :poststed)" />
+		<property name="sql"
+			value="INSERT INTO POSTNUMMER(postnummer, poststed) VALUES(:postnummer, :poststed)" />
 		<property name="itemSqlParameterSourceProvider">
-			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+			<bean
+				class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
 		</property>
+	</bean>
+
+	<bean id="postnummerFromDBReader"
+		class="org.springframework.batch.item.database.JdbcCursorItemReader" scope="step">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql"
+			value="SELECT ID, POSTNUMMER, POSTSTED FROM POSTNUMMER WHERE ID &gt;= ? and ID &lt;= ?" />
+		<property name="rowMapper">
+			<bean class="no.magott.spring.batch.mapper.PostnummerRowMapper" />
+		</property>
+		<property name="preparedStatementSetter">
+			<bean
+				class="org.springframework.batch.core.resource.ListPreparedStatementSetter">
+				<property name="parameters">
+					<list>
+						<value>#{stepExecutionContext[minValue]}</value>
+						<value>#{stepExecutionContext[maxValue]}</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="reverseProcessor"
+		class="no.magott.spring.batch.processor.PostnummerReverseProcessor" />
+
+	<bean id="postnrReverseWriter"
+		class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql"
+			value="INSERT INTO POSTNR_REVERSE(postnummer, poststed) VALUES(:postnummer, :poststed)" />
+		<property name="itemSqlParameterSourceProvider">
+			<bean
+				class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
+		</property>
+	</bean>
+
+	<bean id="partitioner"
+		class="org.springframework.batch.sample.common.ColumnRangePartitioner">
+		<property name="dataSource" ref="dataSource" />
+		<property name="table" value="POSTNUMMER" />
+		<property name="column" value="ID" />
 	</bean>
 
 </beans>
