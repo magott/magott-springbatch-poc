@@ -7,7 +7,7 @@
 	<artifactId>magott-spring-batch</artifactId>
 	<version>2.0.0.CI-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Commandline</name>
+	<name>Spring Batch PoC</name>
 	<url>http://www.springframework.org/spring-batch/archetypes/simple-cli-archetype</url>
 	<description>
 		<![CDATA[
@@ -103,6 +103,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>		
+		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.2.2</version>
@@ -133,6 +138,11 @@
 			<version>1.2.14</version>
 		</dependency>
 	</dependencies>
+	<scm>
+		<connection>scm:git:https://magott@github.com/magott/magott-springbatch-poc.git</connection>
+		<developerConnection>scm:git:https://magott@github.com/magott/magott-springbatch-poc.git</developerConnection>
+		<url>http://github.com/magott/magott-springbatch-poc</url>
+	</scm>
 
 	<build>
 		<pluginManagement>
