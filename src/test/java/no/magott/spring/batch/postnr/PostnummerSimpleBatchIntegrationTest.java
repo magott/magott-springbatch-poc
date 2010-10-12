@@ -29,7 +29,7 @@ public class PostnummerSimpleBatchIntegrationTest extends JobLauncherTestUtils{
     
     @Test
     public void runJob() throws JobExecutionException{
-        JobParameters jobParameters = new JobParametersBuilder().addLong("systime", System.currentTimeMillis()).toJobParameters();
+        JobParameters jobParameters = new JobParametersBuilder().addString("postnummer.filename", "classpath:postnr.txt").addLong("systime", System.currentTimeMillis()).toJobParameters();
         JobExecution jobExecution = getJobLauncher().run(getJob(), jobParameters);
         assertThat(jobExecution.getExitStatus().getExitCode(), equalTo(ExitStatus.COMPLETED.getExitCode()));
     }
