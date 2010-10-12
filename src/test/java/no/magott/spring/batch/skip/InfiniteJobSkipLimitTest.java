@@ -1,4 +1,4 @@
-    package no.magott.spring.batch.window;
+package no.magott.spring.batch.skip;
 
 import static org.junit.Assert.assertEquals;
 
