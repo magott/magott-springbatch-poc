@@ -10,11 +10,10 @@
 		database</description>
 
 	<job id="postnummerImport" xmlns="http://www.springframework.org/schema/batch">
-		<step id="filTilDb">
+		<step id="filTilDb" next="dbTilReverse">
 			<tasklet>
 				<chunk reader="reader" writer="writer" commit-interval="10" />
 			</tasklet>
-			<batch:next on="*" to="dbTilReverse" />
 		</step>
 		<step id="dbTilReverse" xmlns="http://www.springframework.org/schema/batch">
 			<tasklet>
