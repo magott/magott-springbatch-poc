@@ -81,11 +81,6 @@
 		</property>
 	</bean>
 
-	<bean id="partitioner"
-		class="org.springframework.batch.sample.common.ColumnRangePartitioner">
-		<property name="dataSource" ref="dataSource" />
-		<property name="table" value="POSTNUMMER" />
-		<property name="column" value="ID" />
-	</bean>
+
 
 </beans>
