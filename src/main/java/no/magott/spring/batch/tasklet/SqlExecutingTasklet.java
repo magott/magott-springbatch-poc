@@ -31,7 +31,8 @@ public class SqlExecutingTasklet implements Tasklet, ItemStream {
         String sql = sqls.get(count);
         int updateCount = jdbcTemplate.update(sql);
         contribution.incrementWriteCount(updateCount);
-        return count++ > sqls.size() ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
+        count++;
+        return count == sqls.size() ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
     }
 
     public void setDataSource(DataSource dataSource) {
