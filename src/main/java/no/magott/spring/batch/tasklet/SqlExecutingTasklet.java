@@ -14,47 +14,50 @@ import org.springframework.batch.item.util.ExecutionContextUserSupport;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class SqlExecutingTasklet implements Tasklet, ItemStream {
+public class SqlExecutingTasklet implements Tasklet{
 
-    private final static String EXECUTION_COUNT = "sql.execution.count";
-	
+	private final static String EXECUTION_COUNT = "sql.execution.count";
+
 	private JdbcTemplate jdbcTemplate;
-    private ExecutionContextUserSupport ecSupport;
-    private List<String> sqls;
-    private int count = 0;
-    
-    public SqlExecutingTasklet() {
-		ecSupport = new ExecutionContextUserSupport(SqlExecutingTasklet.class.getSimpleName());
+	private ExecutionContextUserSupport ecSupport;
+	private List<String> sqls;
+	private int count = 0;
+	private ExecutionContext executionContext;
+
+	public SqlExecutingTasklet() {
+		ecSupport = new ExecutionContextUserSupport(
+				SqlExecutingTasklet.class.getSimpleName());
 	}
-    
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        String sql = sqls.get(count);
-        int updateCount = jdbcTemplate.update(sql);
-        contribution.incrementWriteCount(updateCount);
-        count++;
-        return count == sqls.size() ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
-    }
 
-    public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+	public RepeatStatus execute(StepContribution contribution,
+			ChunkContext chunkContext) throws Exception {
+		count = getCount();
+		String sql = sqls.get(count);
+		int updateCount = jdbcTemplate.update(sql);
+		contribution.incrementWriteCount(updateCount);
+		incrementCount();
+		return count == sqls.size() ? RepeatStatus.FINISHED
+				: RepeatStatus.CONTINUABLE;
+	}
 
-    public void close() throws ItemStreamException {
-    	count = 0;
-    }
+	public void setDataSource(DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
-    public void open(ExecutionContext executionContext) throws ItemStreamException {
-    	if(executionContext.containsKey(ecSupport.getKey(EXECUTION_COUNT))){
-    		count = executionContext.getInt(ecSupport.getKey(EXECUTION_COUNT));
-    	}
-    }
+	public int getCount() {
+		return executionContext.containsKey(EXECUTION_COUNT)?executionContext.getInt(ecSupport.getKey(EXECUTION_COUNT)):0;
+	}
 
-    public void update(ExecutionContext executionContext) throws ItemStreamException {
-        executionContext.putInt(ecSupport.getKey(EXECUTION_COUNT), count);        
-    }
+	public void incrementCount(){
+		executionContext.putInt(ecSupport.getKey(EXECUTION_COUNT), ++count);
+	}
 
 	public void setSqls(List<String> sqls) {
 		this.sqls = sqls;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
 	}
 
 }
