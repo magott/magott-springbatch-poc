@@ -11,12 +11,20 @@
 
 	<job id="postnummerImport" xmlns="http://www.springframework.org/schema/batch">
 		<step id="executeSqls">
-			<tasklet ref="executeSqlsTasklet"/>
+			<tasklet ref="executeSqlsTasklet">			
+			</tasklet>			
 		</step>
 	</job>
 
-	<bean id="executeSqlsTasklet" class="no.magott.spring.batch.tasklet.SqlExecutingTasklet">
+	<bean id="executeSqlsTasklet" class="no.magott.spring.batch.tasklet.SqlExecutingTasklet" scope="step">
 		<property name="dataSource" ref="dataSource" />
-</bean>
+		<property name="executionContext" value="#{stepExecution['executionContext']}" />
+		<property name="sqls">
+			<list>
+				<value>insert into postnummer (postnummer, poststed) values(1358, 'Jar')</value>
+				<value>insert into postnummer (postnummer, poststed) values(1347, 'Hosle')</value>
+			</list>
+		</property>
+	</bean>
 
 </beans>
