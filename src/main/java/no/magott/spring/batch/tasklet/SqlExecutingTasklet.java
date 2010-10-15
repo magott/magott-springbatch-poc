@@ -45,11 +45,12 @@ public class SqlExecutingTasklet implements Tasklet{
 	}
 
 	public int getCount() {
-		return executionContext.containsKey(EXECUTION_COUNT)?executionContext.getInt(ecSupport.getKey(EXECUTION_COUNT)):0;
+	    return executionContext.containsKey(ecSupport.getKey(EXECUTION_COUNT))? executionContext.getInt(ecSupport.getKey(EXECUTION_COUNT)) : 0; 	    
 	}
 
 	public void incrementCount(){
-		executionContext.putInt(ecSupport.getKey(EXECUTION_COUNT), ++count);
+	    count = count+1;
+		executionContext.putInt(ecSupport.getKey(EXECUTION_COUNT), count);
 	}
 
 	public void setSqls(List<String> sqls) {
