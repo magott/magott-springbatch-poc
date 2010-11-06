@@ -67,7 +67,7 @@ public class InfiniteJobBatchWindowListenerTests {
                 .addString("batchwindow.cronDate", "*/2 * * * * *")
                 .toJobParameters();
         JobExecution jobExecution = jobLauncher.run(job, params);	
-        assertEquals(ExitStatus.STOPPED, jobExecution.getExitStatus());
+        assertEquals(ExitStatus.STOPPED.getExitCode(), jobExecution.getExitStatus().getExitCode());
 	}
 
 }
