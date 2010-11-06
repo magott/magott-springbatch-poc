@@ -53,20 +53,6 @@ public class InfiniteJobBatchWindowListenerTests {
 		String description = jobExecution.getStepExecutions().iterator().next().getExitStatus().getExitDescription();
 		assertTrue(description.contains("Batch window has passed, batch will exit with data left to process"));
 
-		/*
-		 * The stepExecution.exitStatus is never propagated to jobExecution
-		 * because in general it is not possible to determine which step
-		 * execution has the "final" status
-		 */
-		assertEquals("", jobExecution.getExitStatus().getExitDescription());
-
-		/*
-		 * The interruption exception that stopped the job is saved in the job
-		 * execution, despite the fact that the status is not FAILED. In fact,
-		 * the exception actually signals the Job to take the STOPPED status.
-		 */
-		assertFalse("Stopped job saves its exception", jobExecution.getFailureExceptions().isEmpty());
-
 	}
 
 	private Long getClosingTime() {
