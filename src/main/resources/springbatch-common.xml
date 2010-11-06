@@ -44,6 +44,7 @@
 		use!
 	-->	
 	<jdbc:initialize-database data-source="dataSource">
+		<jdbc:script location="${batch.schema.script.drop}"/>
 		<jdbc:script location="${batch.schema.script}"/>
 		<jdbc:script location="classpath:postnr.sql"/>
 	</jdbc:initialize-database>
